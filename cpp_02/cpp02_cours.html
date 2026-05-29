@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>C++ Module 02 — Les bases</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,600;9..144,900&family=JetBrains+Mono:wght@400;500;700&display=swap');
+
+  :root {
+    --bg: #0d0e12;
+    --panel: #15171e;
+    --panel2: #1c1f29;
+    --ink: #e8e6df;
+    --muted: #8a8d9a;
+    --accent: #6ee7b7;
+    --accent2: #7dd3fc;
+    --warn: #fca5a5;
+    --gold: #fbbf24;
+    --line: #2a2d38;
+    --code-bg: #0a0b0e;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    background: var(--bg);
+    background-image:
+      radial-gradient(circle at 15% 10%, rgba(110,231,183,0.06), transparent 40%),
+      radial-gradient(circle at 85% 80%, rgba(125,211,252,0.06), transparent 40%);
+    color: var(--ink);
+    font-family: 'Fraunces', Georgia, serif;
+    line-height: 1.7;
+    padding: 0;
+  }
+
+  .wrap { max-width: 860px; margin: 0 auto; padding: 0 24px 120px; }
+
+  header.hero {
+    padding: 90px 24px 50px;
+    text-align: center;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 40px;
+    position: relative;
+  }
+  header.hero::before {
+    content: "{ }";
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 140px;
+    color: rgba(110,231,183,0.04);
+    position: absolute;
+    top: 40px; left: 50%;
+    transform: translateX(-50%);
+    pointer-events: none;
+  }
+  .hero .tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    letter-spacing: 0.3em;
+    color: var(--accent);
+    text-transform: uppercase;
+  }
+  .hero h1 {
+    font-size: clamp(2.4rem, 6vw, 4rem);
+    font-weight: 900;
+    line-height: 1.05;
+    margin: 14px 0 10px;
+    letter-spacing: -0.02em;
+  }
+  .hero p { color: var(--muted); font-size: 1.05rem; max-width: 560px; margin: 0 auto; }
+
+  .progress-rail {
+    position: sticky; top: 0; z-index: 50;
+    background: rgba(13,14,18,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+    padding: 0;
+  }
+  .progress-rail .bar { height: 3px; background: var(--accent); width: 0%; transition: width 0.2s; }
+
+  .toc {
+    display: flex; flex-wrap: wrap; gap: 8px;
+    padding: 12px 24px;
+    max-width: 860px; margin: 0 auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+  }
+  .toc a {
+    color: var(--muted); text-decoration: none;
+    padding: 4px 10px; border: 1px solid var(--line); border-radius: 99px;
+    transition: all 0.2s;
+  }
+  .toc a:hover { color: var(--bg); background: var(--accent); border-color: var(--accent); }
+
+  section { margin: 60px 0; scroll-margin-top: 80px; }
+
+  .num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-size: 0.85rem; letter-spacing: 0.2em;
+  }
+  h2 {
+    font-size: clamp(1.8rem, 4vw, 2.6rem);
+    font-weight: 900; letter-spacing: -0.02em;
+    margin: 6px 0 18px; line-height: 1.1;
+  }
+  h3 { font-size: 1.3rem; font-weight: 600; margin: 28px 0 10px; color: var(--accent2); }
+  p { margin: 12px 0; }
+  .lead { font-size: 1.12rem; color: #cfcdc4; }
+
+  strong { color: #fff; font-weight: 600; }
+  em { color: var(--gold); font-style: italic; }
+
+  code.inline {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--code-bg);
+    color: var(--accent);
+    padding: 2px 7px; border-radius: 5px;
+    font-size: 0.85em; border: 1px solid var(--line);
+  }
+
+  pre {
+    background: var(--code-bg);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--accent2);
+    border-radius: 8px;
+    padding: 18px 20px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.82rem;
+    line-height: 1.6;
+    margin: 16px 0;
+    color: #d4d2cb;
+  }
+  pre .c { color: #5f6470; font-style: italic; }
+  pre .k { color: #f0abfc; }
+  pre .t { color: #7dd3fc; }
+  pre .s { color: #6ee7b7; }
+  pre .n { color: #fbbf24; }
+
+  .card {
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 24px;
+    margin: 18px 0;
+  }
+
+  .callout {
+    border-radius: 10px; padding: 16px 20px; margin: 18px 0;
+    font-size: 0.97rem;
+    display: flex; gap: 14px; align-items: flex-start;
+  }
+  .callout .ico { font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
+  .callout.tip { background: rgba(110,231,183,0.08); border: 1px solid rgba(110,231,183,0.3); }
+  .callout.warn { background: rgba(252,165,165,0.08); border: 1px solid rgba(252,165,165,0.3); }
+  .callout.gold { background: rgba(251,191,36,0.08); border: 1px solid rgba(251,191,36,0.3); }
+
+  .quiz {
+    background: var(--panel2);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    padding: 22px 24px; margin: 24px 0;
+  }
+  .quiz .q { font-weight: 600; color: var(--accent2); margin-bottom: 14px; font-size: 1.05rem; }
+  .quiz .opt {
+    display: block; width: 100%; text-align: left;
+    background: var(--code-bg); border: 1px solid var(--line);
+    color: var(--ink); padding: 11px 16px; margin: 7px 0;
+    border-radius: 8px; cursor: pointer;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.82rem;
+    transition: all 0.15s;
+  }
+  .quiz .opt:hover { border-color: var(--accent2); }
+  .quiz .opt.correct { background: rgba(110,231,183,0.15); border-color: var(--accent); color: var(--accent); }
+  .quiz .opt.wrong { background: rgba(252,165,165,0.12); border-color: var(--warn); color: var(--warn); }
+  .quiz .fb { margin-top: 12px; font-size: 0.9rem; color: var(--muted); min-height: 1px; }
+  .quiz .fb.show { color: var(--ink); }
+
+  .reveal {
+    margin: 14px 0;
+  }
+  .reveal summary {
+    cursor: pointer; color: var(--gold);
+    font-family: 'JetBrains Mono', monospace; font-size: 0.8rem;
+    padding: 10px 14px; background: var(--panel);
+    border: 1px solid var(--line); border-radius: 8px;
+    list-style: none; user-select: none;
+  }
+  .reveal summary::before { content: "▸ "; }
+  .reveal[open] summary::before { content: "▾ "; }
+  .reveal summary:hover { border-color: var(--gold); }
+  .reveal .body { padding: 4px 16px; border-left: 2px solid var(--line); margin: 10px 0 10px 6px; }
+
+  table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.9rem; }
+  th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--line); }
+  th { color: var(--accent2); font-weight: 600; font-family: 'JetBrains Mono', monospace; font-size: 0.78rem; }
+  td code { font-family: 'JetBrains Mono', monospace; color: var(--accent); }
+
+  .ex-flag {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace; font-size: 0.7rem;
+    background: rgba(125,211,252,0.12); color: var(--accent2);
+    padding: 3px 9px; border-radius: 99px; border: 1px solid rgba(125,211,252,0.3);
+    margin-left: 8px; vertical-align: middle;
+  }
+
+  footer { text-align: center; color: var(--muted); font-size: 0.85rem; padding-top: 40px; border-top: 1px solid var(--line); margin-top: 60px; }
+  footer code { color: var(--accent); font-family: 'JetBrains Mono', monospace; }
+</style>
+</head>
+<body>
+
+<div class="progress-rail"><div class="bar" id="bar"></div></div>
+<nav class="toc">
+  <a href="#ocf">01 · OCF</a>
+  <a href="#overload">02 · Surcharge d'opérateurs</a>
+  <a href="#fixed">03 · Fixed-point</a>
+  <a href="#convert">04 · Conversions</a>
+  <a href="#insertion">05 · operator&lt;&lt;</a>
+  <a href="#static">06 · static</a>
+  <a href="#bsp">07 · BSP</a>
+  <a href="#pieges">08 · Pièges</a>
+</nav>
+
+<header class="hero">
+  <div class="tag">42 · Common Core · CPP</div>
+  <h1>C++ Module 02</h1>
+  <p>Polymorphisme ad-hoc, surcharge d'opérateurs et forme canonique orthodoxe. Les concepts — le code, c'est toi qui l'écris.</p>
+</header>
+
+<div class="wrap">
+
+<div class="callout gold">
+  <span class="ico">📌</span>
+  <div>Le sujet (chapitre IV) est clair&nbsp;: l'objectif est que <strong>tu</strong> construises ton raisonnement. Ce cours explique les <em>concepts</em> pour que tu comprennes ce que tu fais — il ne te donne pas les solutions des exercices. Quand un concept touche directement un exercice, c'est signalé, et c'est à toi de coder.</div>
+</div>
+
+<!-- ============ 1 OCF ============ -->
+<section id="ocf">
+  <div class="num">01</div>
+  <h2>La Forme Canonique Orthodoxe (OCF)</h2>
+  <p class="lead">À partir de ce module, toute classe doit implémenter <strong>4 fonctions membres</strong>. C'est le cœur de tout le module.</p>
+
+  <table>
+    <tr><th>Fonction</th><th>Signature type</th><th>Quand appelée</th></tr>
+    <tr><td>Constructeur par défaut</td><td><code>ClassName();</code></td><td><code>ClassName a;</code></td></tr>
+    <tr><td>Constructeur par copie</td><td><code>ClassName(const ClassName& o);</code></td><td><code>ClassName b(a);</code></td></tr>
+    <tr><td>Opérateur d'affectation</td><td><code>ClassName& operator=(const ClassName& o);</code></td><td><code>c = b;</code></td></tr>
+    <tr><td>Destructeur</td><td><code>~ClassName();</code></td><td>fin de portée / <code>delete</code></td></tr>
+  </table>
+
+  <h3>Pourquoi 4 fonctions ?</h3>
+  <p>Parce que le compilateur les génère <em>automatiquement</em> si tu ne les écris pas. Le but de l'OCF est de te forcer à les écrire toi-même pour <strong>contrôler</strong> ce qui se passe (et, plus tard, gérer la mémoire allouée). Ici on les écrit surtout pour afficher des messages et comprendre <strong>quand</strong> chacune est appelée.</p>
+
+  <div class="callout tip">
+    <span class="ico">🔑</span>
+    <div><strong>La distinction qui piège tout le monde&nbsp;:</strong><br>
+    Copie vs affectation. <code class="inline">Fixed b(a);</code> → constructeur de <strong>copie</strong> (b n'existe pas encore, on le crée à partir de a). <code class="inline">c = b;</code> → opérateur <strong>d'affectation</strong> (c existe déjà, on écrase sa valeur).</div>
+  </div>
+
+  <h3>L'astuce mentale : "naissance / vie / mort"</h3>
+  <p>Un objet <em>naît</em> par un constructeur (défaut, copie, ou un autre), <em>vit</em>, puis <em>meurt</em> par le destructeur. Si tu traces les messages dans la sortie de l'ex00, compte les "Default/Copy constructor" → il doit y avoir exactement autant de "Destructor".</p>
+
+  <div class="quiz" data-correct="1">
+    <div class="q">Dans <code class="inline">Fixed c; c = b;</code> — combien de constructeurs sont appelés pour <code class="inline">c</code> ?</div>
+    <button class="opt">Deux : défaut puis copie</button>
+    <button class="opt">Un seul : le constructeur par défaut</button>
+    <button class="opt">Aucun, l'affectation crée l'objet</button>
+    <div class="fb">Indice : <code>c</code> est déjà construit par défaut à la ligne d'avant. La ligne <code>c = b</code> n'appelle PAS de constructeur, juste <code>operator=</code>.</div>
+  </div>
+
+  <h3>Pourquoi <code class="inline">operator=</code> retourne <code class="inline">ClassName&</code> ?</h3>
+  <p>Pour permettre le chaînage&nbsp;: <code class="inline">a = b = c;</code>. On retourne <code class="inline">*this</code>. Pense aussi à te protéger de l'auto-affectation (<code class="inline">a = a;</code>) avec <code class="inline">if (this != &other)</code> — pas critique ici, mais bonne habitude pour les modules suivants.</p>
+
+  <h3><code class="inline">getRawBits()</code> et <code class="inline">setRawBits()</code> <span class="ex-flag">ex00</span></h3>
+  <p>Ce sont les deux seules méthodes d'accès à l'entier interne <code class="inline">_value</code>. L'interface obligatoire de l'ex00&nbsp;:</p>
+  <pre><span class="t">int</span>  getRawBits( <span class="k">void</span> ) <span class="k">const</span>;   <span class="c">// retourne _value tel quel (l'entier brut)</span>
+<span class="k">void</span> setRawBits( <span class="t">int</span> const raw );  <span class="c">// écrit _value directement</span></pre>
+  <div class="callout tip">
+    <span class="ico">🔑</span>
+    <div><strong>getRawBits() est <code>const</code></strong> parce qu'il ne modifie pas l'objet. setRawBits() ne l'est pas car il écrit <code>_value</code>. Penser à marquer <code>const</code> toutes les méthodes qui ne mutent pas l'objet — sinon le compilateur refuse de les appeler sur un objet <code>const</code>.</div>
+  </div>
+  <p>Ces méthodes sont aussi utiles en interne&nbsp;: dans <code class="inline">operator=</code> et le constructeur de copie, tu peux copier le raw directement via <code class="inline">this->setRawBits(other.getRawBits())</code> sans te soucier de l'échelle.</p>
+</section>
+
+<!-- ============ 2 Overload ============ -->
+<section id="overload">
+  <div class="num">02</div>
+  <h2>Surcharge d'opérateurs (polymorphisme ad-hoc)</h2>
+  <p class="lead">Le "polymorphisme ad-hoc", c'est juste&nbsp;: un même symbole (<code class="inline">+</code>, <code class="inline">&lt;</code>, <code class="inline">&lt;&lt;</code>…) qui se comporte différemment selon les types des opérandes.</p>
+
+  <p>En C++ tu peux <strong>redéfinir</strong> ce que font les opérateurs sur <em>tes</em> types. <code class="inline">a + b</code> n'est qu'un appel déguisé à une fonction nommée <code class="inline">operator+</code>.</p>
+
+  <pre><span class="c">// Ces deux lignes sont équivalentes :</span>
+Fixed r = a + b;
+Fixed r = a.<span class="t">operator+</span>(b);   <span class="c">// version "membre"</span></pre>
+
+  <h3>Deux façons de surcharger</h3>
+  <table>
+    <tr><th>Forme</th><th>Exemple</th><th>Note</th></tr>
+    <tr><td>Membre</td><td><code>Fixed operator+(const Fixed&) const;</code></td><td>l'opérande gauche = <code>*this</code></td></tr>
+    <tr><td>Libre (non-membre)</td><td><code>std::ostream& operator&lt;&lt;(std::ostream&, const Fixed&);</code></td><td>nécessaire quand l'opérande gauche n'est pas ta classe</td></tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="ico">⚠️</span>
+    <div>Le mot-clé <code class="inline">friend</code> est <strong>interdit</strong> dans ce module (note de bas de page du sujet → sinon -42). Donc pour <code class="inline">operator&lt;&lt;</code>, tu fais une fonction libre qui appelle des méthodes <strong>publiques</strong> de ta classe (genre <code class="inline">toFloat()</code>). Pas besoin de <code>friend</code>.</div>
+  </div>
+
+  <h3>Comparaison, arithmétique <span class="ex-flag">ex02</span></h3>
+  <p>Une fois que tu stockes la valeur en interne (le "raw"), tous les opérateurs comparent/calculent sur cette valeur entière. Le truc malin&nbsp;: tu peux écrire <code class="inline">!=</code> en réutilisant <code class="inline">==</code>, <code class="inline">&gt;=</code> à partir de <code class="inline">&lt;</code>, etc. Moins de code = moins de bugs. À toi de trouver lesquels dérivent des autres.</p>
+
+  <h3>Incrément / décrément : le piège pré vs post</h3>
+  <p>C'est LA subtilité de l'ex02. Le compilateur distingue les deux par un <strong>paramètre int factice</strong>&nbsp;:</p>
+  <pre><span class="t">Fixed</span>& <span class="t">operator</span>++();        <span class="c">// PRÉ-incrément : ++a   (retourne référence)</span>
+<span class="t">Fixed</span>  <span class="t">operator</span>++(<span class="t">int</span>);     <span class="c">// POST-incrément : a++  (le (int) est bidon, jamais utilisé)</span></pre>
+  <ul style="margin:12px 0 0 20px; color:var(--ink);">
+    <li><strong>Pré</strong> (<code class="inline">++a</code>)&nbsp;: modifie puis retourne l'objet → retourne une référence.</li>
+    <li><strong>Post</strong> (<code class="inline">a++</code>)&nbsp;: doit retourner la valeur <em>d'avant</em> → tu fais une copie, tu incrémentes <code>*this</code>, tu retournes la copie (par valeur).</li>
+  </ul>
+
+  <div class="quiz" data-correct="1">
+    <div class="q">Pourquoi le post-incrément retourne par <strong>valeur</strong> et pas par référence ?</div>
+    <button class="opt">Pour aller plus vite</button>
+    <button class="opt">Parce qu'il retourne l'ancien état, qui est une copie locale temporaire</button>
+    <button class="opt">Parce que C++98 l'oblige toujours</button>
+    <div class="fb">L'ancienne valeur est une variable locale qui disparaît à la fin de la fonction — retourner une référence dessus serait une référence vers du vide (dangling). Donc par valeur.</div>
+  </div>
+</section>
+
+<!-- ============ 3 Fixed point ============ -->
+<section id="fixed">
+  <div class="num">03</div>
+  <h2>Les nombres à virgule fixe (fixed-point)</h2>
+  <p class="lead">Le concept mathématique derrière toute la classe <code class="inline">Fixed</code>. Comprends ça et le reste coule.</p>
+
+  <p>Idée&nbsp;: stocker un nombre décimal dans un <strong>entier</strong>, en réservant un nombre fixe de bits pour la partie fractionnaire. Ici&nbsp;: <code class="inline">_fractionalBits = 8</code> (constant, toujours 8).</p>
+
+  <div class="card">
+    <p style="margin-top:0;"><strong>La formule clé&nbsp;:</strong></p>
+    <pre style="margin-bottom:0;">valeur réelle  =  raw / 2^8   =  raw / 256
+raw           =  valeur réelle × 256</pre>
+  </div>
+
+  <p>Le facteur d'échelle est <code class="inline">2^8 = 256</code>. Tout passe par là.</p>
+
+  <table>
+    <tr><th>Valeur réelle</th><th>raw stocké</th><th>calcul</th></tr>
+    <tr><td>0</td><td>0</td><td>0 × 256</td></tr>
+    <tr><td>1</td><td>256</td><td>1 × 256</td></tr>
+    <tr><td>10</td><td>2560</td><td>10 × 256</td></tr>
+    <tr><td>0.00390625</td><td>1</td><td>1 / 256 = ε le plus petit</td></tr>
+  </table>
+
+  <div class="callout tip">
+    <span class="ico">💡</span>
+    <div>Le fameux <code class="inline">0.00390625</code> dans la sortie de l'ex02&nbsp;? C'est <strong>1/256</strong> — la plus petite valeur représentable, le ε. Quand tu fais <code class="inline">++a</code> sur un fixed à 0, le raw passe de 0 à 1, soit 0.00390625 en réel. Tout s'explique par 256.</div>
+  </div>
+
+  <h3>Pourquoi décaler de bits plutôt que multiplier ?</h3>
+  <p>Multiplier/diviser par 256, c'est décaler de 8 bits. <code class="inline">x &lt;&lt; 8</code> ≡ <code class="inline">x * 256</code>, et <code class="inline">x &gt;&gt; 8</code> ≡ <code class="inline">x / 256</code> (pour les entiers). C'est rapide et c'est pour ça que les fixed-point sont utilisés en graphisme/son. Mais attention&nbsp;: pour la multiplication de <em>deux</em> fixed entre eux, l'échelle se multiplie aussi (256×256) → il faudra réajuster. Réfléchis à comment.</p>
+</section>
+
+<!-- ============ 4 Conversions ============ -->
+<section id="convert">
+  <div class="num">04</div>
+  <h2>Conversions int ↔ float ↔ fixed <span class="ex-flag">ex01</span></h2>
+  <p class="lead">Quatre constructeurs/méthodes qui font le pont entre les types. Tout repose sur la formule du chapitre 03.</p>
+
+  <table>
+    <tr><th>Opération</th><th>Direction</th><th>Logique (à toi de coder)</th></tr>
+    <tr><td>Constructeur depuis <code>int</code></td><td>int → raw</td><td>l'entier est décalé pour entrer dans le format fixed</td></tr>
+    <tr><td>Constructeur depuis <code>float</code></td><td>float → raw</td><td>multiplier par l'échelle puis arrondir (<code>roundf</code>)</td></tr>
+    <tr><td><code>toFloat()</code></td><td>raw → float</td><td>diviser le raw par l'échelle (en flottant)</td></tr>
+    <tr><td><code>toInt()</code></td><td>raw → int</td><td>diviser le raw par l'échelle (en entier)</td></tr>
+  </table>
+
+  <div class="callout warn">
+    <span class="ico">⚠️</span>
+    <div><strong>Le piège du float&nbsp;:</strong> quand tu convertis un float, tu obtiens rarement un nombre rond après multiplication. <code class="inline">roundf</code> (autorisé, depuis <code class="inline">&lt;cmath&gt;</code>) sert à arrondir au plus proche au lieu de tronquer. C'est pourquoi <code class="inline">42.42f</code> ressort en <code class="inline">42.4219</code> dans l'exemple&nbsp;: la précision de 8 bits ne capture pas exactement 42.42.</div>
+  </div>
+
+  <h3>Attention aux types dans les calculs</h3>
+  <p>Si tu multiplies un <code class="inline">int</code> par 256 et que le résultat dépasse, ou si tu divises sans caster en <code class="inline">float</code>, tu perds la partie décimale. Pose-toi toujours la question&nbsp;: <em>"à ce moment-là, je suis en entier ou en flottant ?"</em></p>
+
+  <div class="quiz" data-correct="2">
+    <div class="q">Pourquoi <code class="inline">toInt()</code> et <code class="inline">toFloat()</code> ne donnent pas la même chose pour un raw donné ?</div>
+    <button class="opt">Ils utilisent des échelles différentes</button>
+    <button class="opt">toInt() est cassé par design</button>
+    <button class="opt">La division entière jette la partie fractionnaire, la division flottante la garde</button>
+    <div class="fb">Même échelle (256), mais <code>raw/256</code> en int tronque (ex: 2/256 = 0), alors qu'en float ça donne 0.0078125.</div>
+  </div>
+</section>
+
+<!-- ============ 5 insertion ============ -->
+<section id="insertion">
+  <div class="num">05</div>
+  <h2>Surcharger <code style="font-size:0.7em">operator&lt;&lt;</code> <span class="ex-flag">ex01</span></h2>
+  <p class="lead">Permet de faire <code class="inline">std::cout &lt;&lt; monFixed;</code> directement.</p>
+
+  <p>Pourquoi une fonction <strong>libre</strong> et pas membre&nbsp;? Parce que l'opérande de gauche est <code class="inline">std::cout</code> (un <code class="inline">std::ostream</code>), pas ton objet. Tu ne peux pas ajouter une méthode à <code class="inline">std::ostream</code>. La signature&nbsp;:</p>
+
+  <pre><span class="t">std::ostream</span>& <span class="t">operator</span>&lt;&lt;(<span class="t">std::ostream</span>& os, <span class="k">const</span> <span class="t">Fixed</span>& f);</pre>
+
+  <ul style="margin:12px 0 0 20px; color:var(--ink);">
+    <li>On retourne <code class="inline">os</code> (la référence reçue) → pour chaîner <code class="inline">cout &lt;&lt; a &lt;&lt; b &lt;&lt; endl;</code></li>
+    <li>À l'intérieur&nbsp;: <code class="inline">os &lt;&lt; f.toFloat();</code> — on insère la représentation flottante. Pas besoin de <code class="inline">friend</code> car <code class="inline">toFloat()</code> est publique.</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="ico">🔗</span>
+    <div>Le chaînage marche parce que chaque <code class="inline">&lt;&lt;</code> retourne le flux, qui sert d'opérande gauche au <code class="inline">&lt;&lt;</code> suivant. C'est exactement le même principe que <code class="inline">a = b = c</code> avec <code class="inline">operator=</code>.</div>
+  </div>
+</section>
+
+<!-- ============ 6 static ============ -->
+<section id="static">
+  <div class="num">06</div>
+  <h2>Membres <code style="font-size:0.7em">static</code> : min / max <span class="ex-flag">ex02</span></h2>
+  <p class="lead">Une fonction <code class="inline">static</code> appartient à la <em>classe</em>, pas à un objet précis.</p>
+
+  <p>On l'appelle avec <code class="inline">Fixed::max(a, b)</code> — remarque le <code class="inline">::</code> et l'absence d'instance devant. Une méthode static n'a <strong>pas</strong> de <code class="inline">this</code>, donc elle ne peut accéder qu'à ses paramètres (et aux membres static comme <code class="inline">_fractionalBits</code>).</p>
+
+  <h3>Pourquoi 4 versions (2 min, 2 max) ?</h3>
+  <p>Le sujet demande une version avec des références <strong>non-const</strong> et une avec des références <strong>const</strong>&nbsp;:</p>
+  <pre><span class="k">static</span> <span class="t">Fixed</span>&       max(<span class="t">Fixed</span>& a, <span class="t">Fixed</span>& b);
+<span class="k">static</span> <span class="k">const</span> <span class="t">Fixed</span>& max(<span class="k">const</span> <span class="t">Fixed</span>& a, <span class="k">const</span> <span class="t">Fixed</span>& b);</pre>
+  <p>La const-correctness&nbsp;: si tu passes des objets <code class="inline">const</code>, seul l'overload const peut les accepter (et il renvoie du const, pour que tu ne puisses pas modifier un const via le retour). C'est de la surcharge sur la const-ness — encore du polymorphisme ad-hoc.</p>
+
+  <div class="callout warn">
+    <span class="ico">⚠️</span>
+    <div>Retourner une <strong>référence</strong> ici est volontaire&nbsp;: on renvoie l'un des deux objets <em>existants</em> passés en paramètre, pas une copie. Comme ils existent en dehors de la fonction, la référence reste valide. (Contrairement au post-incrément où l'objet était local !)</div>
+  </div>
+</section>
+
+<!-- ============ 7 BSP ============ -->
+<section id="bsp">
+  <div class="num">07</div>
+  <h2>BSP : point dans un triangle <span class="ex-flag">ex03</span></h2>
+  <p class="lead">Optionnel ("you can pass this module without completing exercise 03"), mais joli. Concept géométrique seulement.</p>
+
+  <p>L'idée mathématique courante&nbsp;: un point est <strong>dans</strong> le triangle ABC si on calcule l'<em>aire signée</em> des 3 sous-triangles formés avec le point (PAB, PBC, PCA), et qu'elles ont toutes le <strong>même signe</strong> que l'aire totale.</p>
+
+  <div class="card">
+    <p style="margin-top:0;"><strong>Aire signée d'un triangle (P1, P2, P3)&nbsp;:</strong></p>
+    <pre style="margin-bottom:0;">aire = ( (x1-x3)(y2-y3) - (x2-x3)(y1-y3) ) / 2</pre>
+  </div>
+
+  <ul style="margin:12px 0 0 20px; color:var(--ink);">
+    <li>Calcule l'aire de ABC, puis des 3 sous-triangles avec <code class="inline">point</code>.</li>
+    <li>Le point est <strong>strictement dedans</strong> si les 3 sous-aires sont du même signe ET <strong>aucune n'est nulle</strong>.</li>
+    <li>Une sous-aire nulle = le point est sur une arête ou un sommet → le sujet demande <code class="inline">false</code> dans ce cas.</li>
+  </ul>
+
+  <div class="callout tip">
+    <span class="ico">🧮</span>
+    <div>Tous ces calculs se font avec ta classe <code class="inline">Fixed</code> et ses opérateurs surchargés — c'est l'intérêt de l'exo&nbsp;: réutiliser ce que tu as construit. Les attributs <code class="inline">x</code> et <code class="inline">y</code> de <code class="inline">Point</code> sont <code class="inline">const</code>, ce qui a une conséquence directe sur ton <code class="inline">operator=</code> de Point — réfléchis à laquelle.</div>
+  </div>
+</section>
+
+<!-- ============ 8 pieges ============ -->
+<section id="pieges">
+  <div class="num">08</div>
+  <h2>Pièges & checklist de défense</h2>
+
+  <h3>Erreurs classiques qui coûtent la note</h3>
+  <ul style="margin:12px 0 0 20px; color:var(--ink); line-height:2;">
+    <li><strong>Implémentation dans le .hpp</strong> → 0 à l'exo (sauf templates). Déclaration en .hpp, code en .cpp.</li>
+    <li><strong>Include guards manquants</strong> → 0. Mets <code class="inline">#ifndef / #define / #endif</code> dans chaque header.</li>
+    <li><strong>using namespace ou friend</strong> → -42. Interdits ici.</li>
+    <li><strong>STL / containers / &lt;algorithm&gt;</strong> → -42. Pas avant les modules 08-09.</li>
+    <li><strong>Fuites mémoire</strong> si tu utilises <code class="inline">new</code> (pas nécessaire ici, mais surveille).</li>
+    <li><strong>Confondre copie et affectation</strong> dans les messages → la sortie ne correspondra pas.</li>
+    <li><strong>Oublier <code class="inline">const</code></strong> sur <code class="inline">getRawBits()</code> et les méthodes qui ne modifient pas l'objet.</li>
+  </ul>
+
+  <h3>Compilation</h3>
+  <pre>c++ -Wall -Wextra -Werror -std=c++98 *.cpp</pre>
+  <p>Si ça ne compile pas en C++98, ça ne passe pas. Évite tout ce qui est C++11 (auto, nullptr, range-for, etc.).</p>
+
+  <div class="callout gold">
+    <span class="ico">🎤</span>
+    <div><strong>Pour la défense, sache expliquer&nbsp;:</strong> pourquoi <code class="inline">operator=</code> retourne une référence · différence copie/affectation · pourquoi 256 · pourquoi post-incrément retourne par valeur · pourquoi <code class="inline">operator&lt;&lt;</code> est libre · pourquoi 2 versions de min/max. Si tu sais répondre à ça sans notes, t'as compris le module.</div>
+  </div>
+
+  <h3>Ton ordre de travail suggéré</h3>
+  <ol style="margin:12px 0 0 20px; color:var(--ink); line-height:2;">
+    <li>ex00&nbsp;: les 4 fonctions OCF + getRawBits/setRawBits. Fais matcher la sortie exactement.</li>
+    <li>ex01&nbsp;: ajoute les conversions et <code class="inline">operator&lt;&lt;</code>. Vérifie 42.4219.</li>
+    <li>ex02&nbsp;: comparaisons, arithmétique, inc/dec, min/max. Teste chaque opérateur.</li>
+    <li>ex03&nbsp;: si tu as le temps, le BSP.</li>
+  </ol>
+</section>
+
+<footer>
+  <p>Lis le sujet en entier avant de coder. Teste après chaque exo. <br>
+  Le résultat compte moins que <code>le chemin pour y arriver</code>. — bon courage 🛠️</p>
+</footer>
+
+</div>
+
+<script>
+  // progress bar
+  const bar = document.getElementById('bar');
+  window.addEventListener('scroll', () => {
+    const h = document.documentElement;
+    const pct = (h.scrollTop) / (h.scrollHeight - h.clientHeight) * 100;
+    bar.style.width = pct + '%';
+  });
+
+  // quizzes
+  document.querySelectorAll('.quiz').forEach(q => {
+    const correct = parseInt(q.dataset.correct, 10);
+    const opts = q.querySelectorAll('.opt');
+    const fb = q.querySelector('.fb');
+
+    function resetQuiz() {
+      opts.forEach(o => { o.classList.remove('correct','wrong'); o.disabled = false; });
+      fb.classList.remove('show');
+    }
+
+    opts.forEach((opt, i) => {
+      opt.addEventListener('click', () => {
+        opts.forEach(o => o.disabled = true);
+        if (i === correct) {
+          opt.classList.add('correct');
+        } else {
+          opt.classList.add('wrong');
+          opts[correct].classList.add('correct');
+        }
+        fb.classList.add('show');
+        // bouton reset
+        if (!q.querySelector('.reset-btn')) {
+          const btn = document.createElement('button');
+          btn.className = 'reset-btn';
+          btn.textContent = '↺ Réessayer';
+          btn.style.cssText = 'margin-top:10px;background:none;border:1px solid var(--line);color:var(--muted);padding:6px 14px;border-radius:8px;cursor:pointer;font-family:JetBrains Mono,monospace;font-size:0.78rem;';
+          btn.addEventListener('click', () => { resetQuiz(); btn.remove(); });
+          q.appendChild(btn);
+        }
+      });
+    });
+  });
+
+  // smooth scroll for toc
+  document.querySelectorAll('.toc a').forEach(a => {
+    a.addEventListener('click', e => {
+      e.preventDefault();
+      document.querySelector(a.getAttribute('href')).scrollIntoView({behavior:'smooth'});
+    });
+  });
+</script>
+
+</body>
+</html>
