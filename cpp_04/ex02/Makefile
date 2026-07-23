@@ -1,0 +1,44 @@
+# **************************************************************************** #
+#                                                                              #
+#                                                         :::      ::::::::    #
+#    Makefile                                           :+:      :+:    :+:    #
+#                                                     +:+ +:+         +:+      #
+#    By: mateon <mateon@student.42.fr>              +#+  +:+       +#+         #
+#                                                 +#+#+#+#+#+   +#+            #
+#    Created: 2026/07/23 18:31:47 by mateon            #+#    #+#              #
+#    Updated: 2026/07/23 19:33:26 by mateon           ###   ########.fr        #
+#                                                                              #
+# **************************************************************************** #
+
+SRCS = main.cpp src/animal.cpp src/cat.cpp src/dog.cpp src/wronganimal.cpp src/wrongcat.cpp src/brain.cpp
+
+OBJ = $(SRCS:.cpp=.o)
+
+INCLUDE = -I include
+
+CXX = c++
+
+CXXFLAGS = -Wall -Wextra -Werror -std=c++98
+
+NAME = animal
+
+all: $(NAME)
+
+$(NAME): $(OBJ)
+	$(CXX) $(CXXFLAGS) -o $@ $^
+
+%.o: %.cpp $(INCLUDE)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
+	
+clean:
+	rm -f $(OBJ)
+
+fclean: clean
+	rm -f $(NAME)
+	
+re: fclean all
+
+test_leaks: re
+	valgrind --leak-check=full ./$(NAME)
+
+.PHONY: all clean fclean re test_leaks
