@@ -10,9 +10,9 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "include/dog.hpp"
-#include "include/cat.hpp"
-#include "include/wrongcat.hpp"
+#include "include/Dog.hpp"
+#include "include/Cat.hpp"
+#include "include/WrongCat.hpp"
 
 int main()
 {

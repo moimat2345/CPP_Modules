@@ -10,7 +10,7 @@
 #                                                                              #
 # **************************************************************************** #
 
-SRCS = main.cpp src/animal.cpp src/cat.cpp src/dog.cpp src/wronganimal.cpp src/wrongcat.cpp
+SRCS = main.cpp src/Animal.cpp src/Cat.cpp src/Dog.cpp src/WrongAnimal.cpp src/WrongCat.cpp
 
 OBJ = $(SRCS:.cpp=.o)
 
