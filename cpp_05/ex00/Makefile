@@ -18,15 +18,20 @@ CXXFLAGS = -Wall -Wextra -Werror -std=c++98
 SRCS = main.cpp \
 		Bureaucrat.cpp
 
-OBJS = $(SRCS:.cpp=.o)
+OBJ_DIR = obj
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o))
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 	
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 	
 fclean: clean
 	rm -f $(NAME)
