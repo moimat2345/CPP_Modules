@@ -23,19 +23,27 @@ SRCS =	main.cpp \
 	  	PresidentialPardonForm.cpp \
 
 
-OBJS = $(SRCS:.cpp=.o)
+OBJ_DIR = obj
+OBJS = $(addprefix $(OBJ_DIR)/, $(SRCS:.cpp=.o))
 
 all: $(NAME)
 
 $(NAME): $(OBJS)
 	$(CXX) $(CXXFLAGS) -o $(NAME) $(OBJS)
+
+$(OBJ_DIR)/%.o: %.cpp
+	@mkdir -p $(OBJ_DIR)
+	$(CXX) $(CXXFLAGS) -c $< -o $@
 	
 clean:
-	rm -f $(OBJS)
+	rm -rf $(OBJ_DIR)
 	
 fclean: clean
 	rm -f $(NAME)
 
+cleantrees:
+	rm -f *_shrubbery
+
 re: fclean all
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re cleantrees
