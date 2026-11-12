@@ -45,6 +45,9 @@
   .doc{border:1px solid var(--border);border-radius:18px;padding:28px;background:linear-gradient(180deg,var(--surface),var(--surface-2));position:relative;overflow:hidden}
   .doc.pubpriv{box-shadow:0 0 0 1px var(--pub-glow)}
   .doc.cpp01{box-shadow:0 0 0 1px var(--heap-glow)}
+  .doc.cpp05{box-shadow:0 0 0 1px rgba(199,155,255,.14)}
+  .doc.cpp05 .doc-tag{background:rgba(199,155,255,.14);color:var(--ref);border:1px solid rgba(199,155,255,.38)}
+  .doc.cpp05 .chip:hover{border-color:rgba(199,155,255,.38);background:rgba(199,155,255,.05)}
   .doc-head{display:flex;align-items:flex-start;gap:16px;margin-bottom:22px}
   .doc-ic{font-size:2rem;flex:none;line-height:1}
   .doc-meta{flex:1}
@@ -173,6 +176,37 @@
           <a class="chip" href="en/cpp01-principles.html">
             <span class="cic">🖥️</span>
             <span class="ctxt"><span class="cname">cpp01-principles.html</span><span class="cdesc">Interactive HTML + demos</span></span>
+            <span class="arr">→</span>
+          </a>
+        </div>
+      </div>
+    </article>
+
+    <!-- ===== cpp05 exercises ===== -->
+    <article class="doc cpp05 reveal">
+      <span class="doc-num">05</span>
+      <div class="doc-head">
+        <span class="doc-ic">🗂️</span>
+        <div class="doc-meta">
+          <span class="doc-tag">CPP05 · Exceptions</span>
+          <h2>Le guide des exercices CPP05</h2>
+          <p>Ce qu'on attend dans chaque exercice : classes, headers, résultat attendu — avec simulateurs interactifs.</p>
+        </div>
+      </div>
+      <div class="links">
+        <div class="lang-col" data-lang="fr">
+          <div class="lh">🇫🇷 Français</div>
+          <a class="chip" href="fr/cpp05-exercices.html">
+            <span class="cic">🖥️</span>
+            <span class="ctxt"><span class="cname">cpp05-exercices.html</span><span class="cdesc">HTML interactif + simulateurs</span></span>
+            <span class="arr">→</span>
+          </a>
+        </div>
+        <div class="lang-col" data-lang="en">
+          <div class="lh">🇬🇧 English</div>
+          <a class="chip" href="en/cpp05-exercises.html">
+            <span class="cic">🖥️</span>
+            <span class="ctxt"><span class="cname">cpp05-exercises.html</span><span class="cdesc">Interactive HTML + simulators</span></span>
             <span class="arr">→</span>
           </a>
         </div>
